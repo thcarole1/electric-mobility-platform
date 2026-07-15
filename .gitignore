@@ -1,0 +1,22 @@
+# Environnement Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+
+# Données (pas versionnées, seule la structure l'est via .gitkeep)
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Secrets
+.env
+
+# Notebooks
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
