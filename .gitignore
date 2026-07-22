@@ -13,6 +13,7 @@ data/processed/*
 
 # Base DuckDB
 data/warehouse/*.duckdb
+data/warehouse/*.duckdb.wal
 !data/warehouse/.gitkeep
 
 # Secrets
