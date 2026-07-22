@@ -25,7 +25,8 @@ pip install -e ".[dev]"
 electric-mobility-platform/
 ├── data/
 │   ├── raw/          # données brutes, non versionnées
-│   └── processed/    # données nettoyées, non versionnées
+│   ├── processed/    # données nettoyées, non versionnées
+│   └── warehouse/    # base DuckDB, non versionnée
 ├── src/
 │   ├── ingestion/     # récupération des données depuis les APIs
 │   ├── cleaning/      # nettoyage et normalisation

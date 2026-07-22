@@ -11,6 +11,10 @@ data/processed/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 
+# Base DuckDB
+data/warehouse/*.duckdb
+!data/warehouse/.gitkeep
+
 # Secrets
 .env
 
@@ -20,3 +24,6 @@ data/processed/*
 # IDE
 .vscode/
 .idea/
+
+# Artefacts Windows/WSL
+*:Zone.Identifier
