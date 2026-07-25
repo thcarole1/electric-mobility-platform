@@ -67,6 +67,7 @@ def sauvegarder_local(donnees: dict, chemin: Path) -> None:
         json.dump(donnees, f)
     logger.info(f"Données JSON sauvegardées en local : {chemin}")
 
+
 def uploader_s3(chemin_local: Path, bucket: str, cle_s3: str, client_s3) -> None:
     """Upload un fichier local vers S3."""
     try:
