@@ -10,21 +10,6 @@ from ingestion.openchargemap import (
     uploader_s3,
     ingerer_openchargemap)
 
-# Tests - generer_nom_fichier
-def test_generer_nom_fichier_contient_la_ville():
-    resultat = generer_nom_fichier("paris")
-    assert "paris" in resultat
-
-def test_generer_nom_fichier_contient_extract_json():
-    resultat = generer_nom_fichier("paris")
-    assert "_extract.json" in resultat
-
-def test_generer_nom_fichier_differe_entre_deux_appels():
-    resultat_1 = generer_nom_fichier("paris")
-    time.sleep(1)
-    resultat_2 = generer_nom_fichier("paris")
-    assert resultat_1 != resultat_2
-
 # Tests - appeler_api_openchargemap
 def test_appeler_api_openchargemap_succes(monkeypatch):
     class FausseReponse:
@@ -77,50 +62,6 @@ def test_appeler_api_openchargemap_pas_de_retry_sur_erreur_client(monkeypatch):
 
     assert resultat is None
     assert len(appels) == 1
-
-# Tests sauvegarder_local
-def test_sauvegarder_local_ecrit_le_bon_contenu(tmp_path):
-    donnees = {"cle": "valeur"}
-    chemin = tmp_path / "test.json"
-
-    sauvegarder_local(donnees, chemin)
-
-    assert chemin.exists()
-    with open(chemin) as f:
-        contenu = json.load(f)
-    assert contenu == donnees
-
-def test_sauvegarder_local_echoue_si_dossier_parent_absent(tmp_path):
-    donnees = {"cle": "valeur"}
-    chemin = tmp_path / "dossier_inexistant" / "test.json"
-
-    with pytest.raises(FileNotFoundError):
-        sauvegarder_local(donnees, chemin)
-
-# Tests uploader_s3
-def test_uploader_s3_appelle_upload_file(tmp_path):
-    fichier_test = tmp_path / "test.json"
-    fichier_test.write_text('{"cle": "valeur"}')
-
-    client_mock = Mock()
-
-    uploader_s3(fichier_test, "mon-bucket", "raw/test.json", client_mock)
-
-    client_mock.upload_file.assert_called_once_with(str(fichier_test), "mon-bucket", "raw/test.json")
-
-def test_uploader_s3_gere_client_error(tmp_path, caplog):
-    fichier_test = tmp_path / "test.json"
-    fichier_test.write_text('{"cle": "valeur"}')
-
-    client_mock = Mock()
-    client_mock.upload_file.side_effect = ClientError(
-        error_response={"Error": {"Code": "403", "Message": "Accès refusé"}},
-        operation_name="upload_file"
-    )
-
-    uploader_s3(fichier_test, "mon-bucket", "raw/test.json", client_mock)
-
-    assert "Erreur AWS lors de l'upload" in caplog.text
 
 # Tests ingerer_openchargemap
 def test_ingerer_openchargemap_enchaine_toutes_les_etapes(monkeypatch, tmp_path):

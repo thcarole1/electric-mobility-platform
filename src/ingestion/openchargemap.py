@@ -7,6 +7,8 @@ import json
 from pathlib import Path
 from datetime import datetime
 
+from common.io import generer_nom_fichier, sauvegarder_local, uploader_s3
+
 import requests
 import boto3
 from botocore.exceptions import ClientError, NoCredentialsError
@@ -22,11 +24,6 @@ MAX_TENTATIVES = 3
 DELAI_ENTRE_TENTATIVES = 5  # secondes
 
 # 3. Fonctions (des plus "basses" / techniques vers les plus "hautes" / orchestratrices)
-def generer_nom_fichier(ville: str) -> str:
-    """Génère un nom de fichier horodaté pour une extraction."""
-    now = datetime.now().strftime("%Y-%m-%d_%H%M%S")
-    return f"{now}_{ville}_extract.json"
-
 def appeler_api_openchargemap(latitude: float, longitude: float, distance: int, cle_api: str) -> dict | None:
     """Appelle l'API Open Charge Map et renvoie les résultats, ou None en cas d'échec."""
 
@@ -60,23 +57,6 @@ def appeler_api_openchargemap(latitude: float, longitude: float, distance: int, 
 
     logger.error(f"Échec après {MAX_TENTATIVES} tentatives.")
     return None
-
-def sauvegarder_local(donnees: dict, chemin: Path) -> None:
-    """Sauvegarde les données JSON en local."""
-    with open(chemin, "w") as f:
-        json.dump(donnees, f)
-    logger.info(f"Données JSON sauvegardées en local : {chemin}")
-
-
-def uploader_s3(chemin_local: Path, bucket: str, cle_s3: str, client_s3) -> None:
-    """Upload un fichier local vers S3."""
-    try:
-        client_s3.upload_file(str(chemin_local), bucket, cle_s3)
-        logger.info(f"Upload S3 réussi du fichier {chemin_local}")
-    except NoCredentialsError:
-        logger.error("Erreur : identifiants AWS manquants ou invalides.")
-    except ClientError as e:
-        logger.error(f"Erreur AWS lors de l'upload : {e}")
 
 # 4. Fonction d'orchestration, qui assemble les précédentes
 def ingerer_openchargemap(
