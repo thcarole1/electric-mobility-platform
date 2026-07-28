@@ -1,0 +1,61 @@
+from unittest.mock import Mock
+
+from cleaning.meteo import (extraire_meteo)
+
+def test_extraire_meteo():
+    donnees_test = {
+                    "latitude": 48.89279,
+                    "longitude": 2.2920206,
+                    "generationtime_ms": 0.03838539123535156,
+                    "utc_offset_seconds": 0,
+                    "timezone": "GMT",
+                    "timezone_abbreviation": "GMT",
+                    "elevation": 36.0,
+                    "hourly_units": {
+                                    "time": "iso8601",
+                                    "temperature_2m": "\u00b0C"
+                                    },
+                                    "hourly": {
+                                                "time": ["2026-07-20T00:00", "2026-07-20T01:00"],
+                                                "temperature_2m": [15.5, 14.9]
+                                                }
+                    }
+
+    resultat = extraire_meteo(donnees_test)
+
+    assert len(resultat) == 2
+    assert resultat[0]["time"] == "2026-07-20T00:00"
+    assert resultat[0]["temperature_2m"] == 15.5
+    assert resultat[1]["time"] == "2026-07-20T01:00"
+    assert resultat[1]["temperature_2m"] == 14.9
+
+def test_extraire_meteo_plusieurs_variables():
+    donnees_test = {
+                    "latitude": 48.89279,
+                    "longitude": 2.2920206,
+                    "generationtime_ms": 0.03838539123535156,
+                    "utc_offset_seconds": 0,
+                    "timezone": "GMT",
+                    "timezone_abbreviation": "GMT",
+                    "elevation": 36.0,
+                    "hourly_units": {
+                                    "time": "iso8601",
+                                    "temperature_2m": "\u00b0C",
+                                    "precipitation" :"mL"
+                                    },
+                                    "hourly": {
+                                                "time": ["2026-07-20T00:00", "2026-07-20T01:00"],
+                                                "temperature_2m": [15.5, 14.9],
+                                                "precipitation" : [0.0, 0.0],
+                                                }
+                    }
+
+    resultat = extraire_meteo(donnees_test)
+
+    assert len(resultat) == 2
+    assert resultat[0]["time"] == "2026-07-20T00:00"
+    assert resultat[0]["temperature_2m"] == 15.5
+    assert resultat[0]["precipitation"] == 0.0
+    assert resultat[1]["time"] == "2026-07-20T01:00"
+    assert resultat[1]["temperature_2m"] == 14.9
+    assert resultat[1]["precipitation"] == 0.0
