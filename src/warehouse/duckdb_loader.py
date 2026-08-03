@@ -150,3 +150,27 @@ def charger_meteo_dans_duckdb(con: DuckDBPyConnection, meteo_df: pl.DataFrame) -
     inserer_meteo(con, meteo_df)
 
     logger.info(f"Chargement DuckDB terminé : meteo={meteo_df.shape}")
+
+
+def creer_table_sessions(con: DuckDBPyConnection) -> None:
+    """Crée la table sessions si elle n'existe pas déjà."""
+    con.execute("CREATE SEQUENCE IF NOT EXISTS sessions_id_seq START 1")
+    con.execute("""
+        CREATE TABLE IF NOT EXISTS sessions (
+            session_id BIGINT PRIMARY KEY DEFAULT nextval('sessions_id_seq'),
+            connection_id BIGINT REFERENCES connections(connection_id),
+            debut TIMESTAMP,
+            fin TIMESTAMP,
+            energie_kwh DOUBLE
+        )
+    """)
+    logger.info("Table sessions créée avec succès.")
+
+def inserer_sessions(con: DuckDBPyConnection, sessions_df: pl.DataFrame) -> None:
+    """Insère de nouvelles sessions dans la table sessions."""
+    con.execute("""
+        INSERT INTO sessions (connection_id, debut, fin, energie_kwh)
+        SELECT                connection_id, debut, fin, energie_kwh
+        FROM sessions_df
+    """)
+    logger.info(f"Insertion données dans la table sessions : {sessions_df.shape[0]} lignes traitées avec succès")
