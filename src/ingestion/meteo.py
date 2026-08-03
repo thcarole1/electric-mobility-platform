@@ -63,32 +63,21 @@ def ingerer_meteo(
     bucket_s3: str,
     client_s3,
     root_path,
-) -> None:
-    """Orchestre l'ingestion complète : appel API, sauvegarde locale, upload S3."""
+) -> str | None:
+    """Orchestre l'ingestion complète : appel API, sauvegarde locale, upload S3.
+    Renvoie le nom du fichier généré, ou None en cas d'échec."""
 
-    # Appeler generer_nom_fichier(ville)
     nom_fichier = generer_nom_fichier(identifiant, suffixe="meteo")
-
-    # Construire le chemin local complet
     chemin_local = root_path / "data" / "raw" / nom_fichier
 
-    # Appeler appeler_api_meteo(...)
-    donnees = appeler_api_meteo(
-                                    latitude,
-                                    longitude,
-                                    start_date,
-                                    end_date,
-                                    hourly,
-                                )
+    donnees = appeler_api_meteo(latitude, longitude, start_date, end_date, hourly)
     if donnees is None:
         logger.error("Ingestion interrompue : échec de l'appel API.")
-        return
+        return None
 
-    # Appeler sauvegarder_local(...)
     sauvegarder_local(donnees, chemin_local)
 
-    # Construire la clé S3 (f"raw/{nom_fichier}")
     cle_s3 = "raw/" + nom_fichier
-
-    # Appeler uploader_s3(...)
     uploader_s3(chemin_local, bucket_s3, cle_s3, client_s3)
+
+    return nom_fichier

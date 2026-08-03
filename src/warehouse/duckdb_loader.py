@@ -95,6 +95,35 @@ def inserer_connections(con: DuckDBPyConnection, connections_df: pl.DataFrame) -
     logger.info(f"Insertion données dans la table Connections : {connections_df.shape[0]} lignes traitées avec succès")
 
 
+def creer_table_meteo(con: DuckDBPyConnection) -> None:
+    """Crée la table meteo si elle n'existe pas déjà."""
+
+    con.execute("""
+    CREATE TABLE IF NOT EXISTS meteo (
+        poi_id BIGINT REFERENCES poi(poi_id),
+        time VARCHAR,
+        temperature_2m DOUBLE,
+        PRIMARY KEY (poi_id, time)
+        )
+    """)
+
+    # Attention : Message à adapter pour bien faire comprendre le cas où la table existe déjà.
+    logger.info("Table meteo créée avec succès.")
+
+
+def inserer_meteo(con: DuckDBPyConnection, meteo_df: pl.DataFrame) -> None:
+    """Insère ou met à jour les données meteo (upsert sur poi_id, time)."""
+    con.execute("""
+        INSERT INTO meteo (poi_id, time, temperature_2m)
+        SELECT           poi_id, time, temperature_2m
+        FROM meteo_df
+        ON CONFLICT (poi_id, time) DO UPDATE SET
+            temperature_2m = EXCLUDED.temperature_2m
+        """)
+
+    logger.info(f"Insertion données dans la table meteo : {meteo_df.shape[0]} lignes traitées avec succès")
+
+
 def charger_openchargemap_dans_duckdb(
     con: DuckDBPyConnection,
     poi_df: pl.DataFrame,
@@ -108,3 +137,16 @@ def charger_openchargemap_dans_duckdb(
     inserer_connections(con, connections_df)
 
     logger.info(f"Chargement DuckDB terminé : poi={poi_df.shape}, connections={connections_df.shape}")
+
+
+def charger_meteo_dans_duckdb(con: DuckDBPyConnection, meteo_df: pl.DataFrame) -> None:
+    """Orchestre le chargement de la table meteo dans DuckDB.
+
+    Suppose que la table poi existe déjà et est peuplée
+    (contrainte de clé étrangère sur poi_id) — appeler
+    charger_openchargemap_dans_duckdb avant cette fonction.
+    """
+    creer_table_meteo(con)
+    inserer_meteo(con, meteo_df)
+
+    logger.info(f"Chargement DuckDB terminé : meteo={meteo_df.shape}")

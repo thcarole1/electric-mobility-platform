@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from cleaning.meteo import (extraire_meteo)
+from cleaning.meteo import (extraire_meteo, assembler_meteo_multi_poi)
 
 def test_extraire_meteo():
     donnees_test = {
@@ -59,3 +59,65 @@ def test_extraire_meteo_plusieurs_variables():
     assert resultat[1]["time"] == "2026-07-20T01:00"
     assert resultat[1]["temperature_2m"] == 14.9
     assert resultat[1]["precipitation"] == 0.0
+
+
+import json
+
+def test_assembler_meteo_multi_poi(tmp_path):
+    (tmp_path / "data" / "raw").mkdir(parents=True)
+
+    donnees_poi_1 = {
+        "hourly": {
+            "time": ["2026-07-20T00:00"],
+            "temperature_2m": [15.5],
+        }
+    }
+    chemin_fichier_1 = tmp_path / "data" / "raw" / "fichier_poi_1.json"
+    with open(chemin_fichier_1, "w") as f:
+        json.dump(donnees_poi_1, f)
+
+    correspondance_test = {123: "fichier_poi_1.json"}
+
+    resultat = assembler_meteo_multi_poi(correspondance_test, tmp_path)
+
+    assert len(resultat) == 1
+    assert resultat[0]["poi_id"] == 123
+    assert resultat[0]["temperature_2m"] == 15.5
+
+
+def test_assembler_meteo_multi_poi_deux_poi(tmp_path):
+    (tmp_path / "data" / "raw").mkdir(parents=True)
+
+    donnees_poi_1 = {
+        "hourly": {
+            "time": ["2026-07-20T00:00"],
+            "temperature_2m": [15.5],
+        }
+    }
+    donnees_poi_2 = {
+        "hourly": {
+            "time": ["2026-07-20T00:00"],
+            "temperature_2m": [10.5],
+        }
+    }
+    chemin_fichier_1 = tmp_path / "data" / "raw" / "fichier_poi_1.json"
+    chemin_fichier_2 = tmp_path / "data" / "raw" / "fichier_poi_2.json"
+
+    with open(chemin_fichier_1, "w") as f:
+        json.dump(donnees_poi_1, f)
+
+    with open(chemin_fichier_2, "w") as f:
+        json.dump(donnees_poi_2, f)
+
+    correspondance_test = {
+                            123: "fichier_poi_1.json",
+                            456 : "fichier_poi_2.json"
+                            }
+
+    resultat = assembler_meteo_multi_poi(correspondance_test, tmp_path)
+
+    assert len(resultat) == 2
+    assert resultat[0]["poi_id"] == 123
+    assert resultat[0]["temperature_2m"] == 15.5
+    assert resultat[1]["poi_id"] == 456
+    assert resultat[1]["temperature_2m"] == 10.5

@@ -79,7 +79,7 @@ def test_ingerer_meteo_enchaine_toutes_les_etapes(monkeypatch, tmp_path):
         lambda chemin, bucket, cle, client: appels_upload.append((chemin, bucket, cle))
     )
 
-    ingerer_meteo(
+    resultat = ingerer_meteo(
         latitude=48.856614,
         longitude=2.352222,
         start_date="2026-07-20",
@@ -93,6 +93,7 @@ def test_ingerer_meteo_enchaine_toutes_les_etapes(monkeypatch, tmp_path):
 
     assert len(appels_sauvegarde) == 1
     assert len(appels_upload) == 1
+    assert resultat is not None  # le nom de fichier généré
 
 
 def test_ingerer_meteo_echec_API(monkeypatch, tmp_path):
@@ -112,7 +113,7 @@ def test_ingerer_meteo_echec_API(monkeypatch, tmp_path):
         lambda chemin, bucket, cle, client: appels_upload.append((chemin, bucket, cle))
     )
 
-    ingerer_meteo(
+    resultat = ingerer_meteo(
         latitude=48.856614,
         longitude=2.352222,
         start_date="2026-07-20",
@@ -126,3 +127,4 @@ def test_ingerer_meteo_echec_API(monkeypatch, tmp_path):
 
     assert len(appels_sauvegarde) == 0
     assert len(appels_upload) == 0
+    assert resultat is None

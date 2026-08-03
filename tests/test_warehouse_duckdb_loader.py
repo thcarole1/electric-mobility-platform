@@ -7,7 +7,10 @@ from warehouse.duckdb_loader import (
     inserer_poi,
     creer_table_connections,
     inserer_connections,
-    charger_openchargemap_dans_duckdb)
+    charger_openchargemap_dans_duckdb,
+    creer_table_meteo,
+    inserer_meteo,
+    charger_meteo_dans_duckdb)
 
 @pytest.fixture
 def con():
@@ -15,6 +18,7 @@ def con():
     yield connexion
     connexion.close()
 
+# Table POI
 def test_creer_table_poi(con):
     creer_table_poi(con)
     resultat = con.execute("SELECT * FROM poi").fetchall()
@@ -72,6 +76,7 @@ def test_inserer_poi_upsert(con):
     assert resultat == [(1, "Nouveau nom")]
 
 
+# Table Connections
 def test_creer_table_connections(con):
     creer_table_poi(con)
     creer_table_connections(con)
@@ -172,3 +177,125 @@ def test_charger_openchargemap_dans_duckdb(con):
 
     assert resultat_poi == [(1,)]
     assert resultat_connections == [(1,)]
+
+
+
+
+# Table Météo
+def test_creer_table_meteo(con):
+    creer_table_poi(con)
+    creer_table_meteo(con)
+    resultat = con.execute("SELECT * FROM meteo").fetchall()
+    assert resultat == []
+
+def test_creer_table_meteo_nb_colonnes(con):
+    creer_table_poi(con)
+    creer_table_meteo(con)
+    resultat = con.execute("DESCRIBE meteo").fetchall()
+    assert len(resultat) == 3
+
+def test_inserer_meteo(con):
+    creer_table_poi(con)
+    creer_table_meteo(con)
+
+    poi_df_test = pl.DataFrame({
+        "poi_id": [1],
+        "title": ["Test"],
+        "town": ["Paris"],
+        "town_normalisee": ["Paris"],
+        "postcode": ["75001"],
+        "latitude": [48.85],
+        "longitude": [2.35],
+        "number_of_points": [1],
+        "usage_cost": ["Free"],
+        "date_last_confirmed": ["2026-01-01"],
+    })
+
+    inserer_poi(con, poi_df_test)
+
+    meteo_df_test = pl.DataFrame({
+        "poi_id": [1],
+        "time" : ['2026-07-20T01:00'],
+        "temperature_2m" : [14.9]
+    })
+
+    inserer_meteo(con, meteo_df_test)
+
+    resultat = con.execute("SELECT poi_id, time, temperature_2m FROM meteo").fetchall()
+    assert resultat == [(1, '2026-07-20T01:00',14.9)]
+
+def test_inserer_meteo_upsert(con):
+    creer_table_poi(con)
+    creer_table_meteo(con)
+
+    poi_df_test = pl.DataFrame({
+        "poi_id": [1],
+        "title": ["Test"],
+        "town": ["Paris"],
+        "town_normalisee": ["Paris"],
+        "postcode": ["75001"],
+        "latitude": [48.85],
+        "longitude": [2.35],
+        "number_of_points": [1],
+        "usage_cost": ["Free"],
+        "date_last_confirmed": ["2026-01-01"],
+    })
+
+    inserer_poi(con, poi_df_test)
+
+    meteo_df_test_1 = pl.DataFrame({
+        "poi_id": [1],
+        "time" : ['2026-07-20T01:00'],
+        "temperature_2m" : [14.9]
+    })
+
+    inserer_meteo(con, meteo_df_test_1)
+
+    meteo_df_test_2 = meteo_df_test_1.with_columns(pl.lit(25).alias("temperature_2m"))
+    inserer_meteo(con, meteo_df_test_2)
+
+    resultat = con.execute("SELECT poi_id, time, temperature_2m FROM meteo").fetchall()
+    assert resultat == [(1, '2026-07-20T01:00', 25)]
+
+def test_inserer_meteo_poi_id_inexistant(con):
+    creer_table_poi(con)
+    creer_table_meteo(con)
+
+    meteo_df_test = pl.DataFrame({
+        "poi_id": [999],
+        "time" : ['2026-07-20T01:00'],
+        "temperature_2m" : [14.9]
+    })
+
+    with pytest.raises(duckdb.ConstraintException):
+        inserer_meteo(con, meteo_df_test)
+
+def test_charger_meteo_dans_duckdb(con):
+    creer_table_poi(con)
+    poi_df_test = pl.DataFrame({
+        "poi_id": [1],
+        "title": ["Test"],
+        "town": ["Paris"],
+        "town_normalisee": ["Paris"],
+        "postcode": ["75001"],
+        "latitude": [48.85],
+        "longitude": [2.35],
+        "number_of_points": [1],
+        "usage_cost": ["Free"],
+        "date_last_confirmed": ["2026-01-01"],
+    })
+    inserer_poi(con, poi_df_test)
+
+    meteo_df_test = pl.DataFrame({
+        "poi_id": [1],
+        "time" : ['2026-07-20T01:00'],
+        "temperature_2m" : [14.9]
+    })
+
+    charger_meteo_dans_duckdb(con, meteo_df_test)
+
+    resultat_poi = con.execute("SELECT COUNT(*) FROM poi").fetchall()
+    resultat_meteo = con.execute("SELECT COUNT(*) FROM meteo").fetchall()
+
+    assert resultat_poi == [(1,)]
+    assert resultat_meteo == [(1,)]
