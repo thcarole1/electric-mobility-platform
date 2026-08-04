@@ -22,7 +22,6 @@ def test_appeler_api_meteo_succes(monkeypatch):
     resultat = appeler_api_meteo(48.85, 2.35, "2026-07-20","2026-07-24","temperature_2m")
     assert resultat == {"resultat": "donnees_test"}
 
-
 def test_appeler_api_meteo_retry_sur_erreur_serveur(monkeypatch):
     appels = []
 
@@ -94,7 +93,6 @@ def test_ingerer_meteo_enchaine_toutes_les_etapes(monkeypatch, tmp_path):
     assert len(appels_sauvegarde) == 1
     assert len(appels_upload) == 1
     assert resultat is not None  # le nom de fichier généré
-
 
 def test_ingerer_meteo_echec_API(monkeypatch, tmp_path):
     appels_sauvegarde = []

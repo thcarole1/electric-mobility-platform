@@ -8,7 +8,7 @@ from duckdb import DuckDBPyConnection
 
 logger = logging.getLogger(__name__)
 
-
+# Table poi
 def creer_table_poi(con: DuckDBPyConnection) -> None:
     """Crée la table poi si elle n'existe pas déjà."""
 
@@ -29,7 +29,6 @@ def creer_table_poi(con: DuckDBPyConnection) -> None:
 
     # Attention : Message à adapter pour bien faire comprendre le cas où la table existe déjà.
     logger.info("Table POI créée avec succès.")
-
 
 def inserer_poi(con: DuckDBPyConnection, poi_df: pl.DataFrame) -> None:
     """Insère ou met à jour les données poi (upsert sur poi_id)."""
@@ -52,8 +51,7 @@ def inserer_poi(con: DuckDBPyConnection, poi_df: pl.DataFrame) -> None:
 
     logger.info(f"Insertion données dans la table POI : {poi_df.shape[0]} lignes traitées avec succès")
 
-
-
+# Table connections
 def creer_table_connections(con: DuckDBPyConnection) -> None:
     """Crée la table connections si elle n'existe pas déjà."""
 
@@ -94,7 +92,7 @@ def inserer_connections(con: DuckDBPyConnection, connections_df: pl.DataFrame) -
 
     logger.info(f"Insertion données dans la table Connections : {connections_df.shape[0]} lignes traitées avec succès")
 
-
+# Table meteo
 def creer_table_meteo(con: DuckDBPyConnection) -> None:
     """Crée la table meteo si elle n'existe pas déjà."""
 
@@ -110,7 +108,6 @@ def creer_table_meteo(con: DuckDBPyConnection) -> None:
     # Attention : Message à adapter pour bien faire comprendre le cas où la table existe déjà.
     logger.info("Table meteo créée avec succès.")
 
-
 def inserer_meteo(con: DuckDBPyConnection, meteo_df: pl.DataFrame) -> None:
     """Insère ou met à jour les données meteo (upsert sur poi_id, time)."""
     con.execute("""
@@ -123,35 +120,7 @@ def inserer_meteo(con: DuckDBPyConnection, meteo_df: pl.DataFrame) -> None:
 
     logger.info(f"Insertion données dans la table meteo : {meteo_df.shape[0]} lignes traitées avec succès")
 
-
-def charger_openchargemap_dans_duckdb(
-    con: DuckDBPyConnection,
-    poi_df: pl.DataFrame,
-    connections_df: pl.DataFrame,
-) -> None:
-    """Orchestre le chargement complet dans DuckDB : création des tables et upsert."""
-    creer_table_poi(con)
-    inserer_poi(con, poi_df)
-
-    creer_table_connections(con)
-    inserer_connections(con, connections_df)
-
-    logger.info(f"Chargement DuckDB terminé : poi={poi_df.shape}, connections={connections_df.shape}")
-
-
-def charger_meteo_dans_duckdb(con: DuckDBPyConnection, meteo_df: pl.DataFrame) -> None:
-    """Orchestre le chargement de la table meteo dans DuckDB.
-
-    Suppose que la table poi existe déjà et est peuplée
-    (contrainte de clé étrangère sur poi_id) — appeler
-    charger_openchargemap_dans_duckdb avant cette fonction.
-    """
-    creer_table_meteo(con)
-    inserer_meteo(con, meteo_df)
-
-    logger.info(f"Chargement DuckDB terminé : meteo={meteo_df.shape}")
-
-
+# Table sessions
 def creer_table_sessions(con: DuckDBPyConnection) -> None:
     """Crée la table sessions si elle n'existe pas déjà."""
     con.execute("CREATE SEQUENCE IF NOT EXISTS sessions_id_seq START 1")
@@ -174,3 +143,43 @@ def inserer_sessions(con: DuckDBPyConnection, sessions_df: pl.DataFrame) -> None
         FROM sessions_df
     """)
     logger.info(f"Insertion données dans la table sessions : {sessions_df.shape[0]} lignes traitées avec succès")
+
+# Charger openchargemap dans DuckBD
+def charger_openchargemap_dans_duckdb(
+    con: DuckDBPyConnection,
+    poi_df: pl.DataFrame,
+    connections_df: pl.DataFrame,
+) -> None:
+    """Orchestre le chargement complet dans DuckDB : création des tables et upsert."""
+    creer_table_poi(con)
+    inserer_poi(con, poi_df)
+
+    creer_table_connections(con)
+    inserer_connections(con, connections_df)
+
+    logger.info(f"Chargement DuckDB terminé : poi={poi_df.shape}, connections={connections_df.shape}")
+
+# Charger meteo dans DuckBD
+def charger_meteo_dans_duckdb(con: DuckDBPyConnection, meteo_df: pl.DataFrame) -> None:
+    """Orchestre le chargement de la table meteo dans DuckDB.
+
+    Suppose que la table poi existe déjà et est peuplée
+    (contrainte de clé étrangère sur poi_id) — appeler
+    charger_openchargemap_dans_duckdb avant cette fonction.
+    """
+    creer_table_meteo(con)
+    inserer_meteo(con, meteo_df)
+
+    logger.info(f"Chargement DuckDB terminé : meteo={meteo_df.shape}")
+
+# Charger sessions dans DuckBD
+def charger_sessions_dans_duckdb(con: DuckDBPyConnection, sessions_df: pl.DataFrame) -> None:
+    """Orchestre le chargement de la table sessions dans DuckDB.
+
+    Suppose que la table connections existe déjà et est peuplée
+    (contrainte de clé étrangère sur connection_id).
+    """
+    creer_table_sessions(con)
+    inserer_sessions(con, sessions_df)
+
+    logger.info(f"Chargement DuckDB terminé : sessions={sessions_df.shape}")

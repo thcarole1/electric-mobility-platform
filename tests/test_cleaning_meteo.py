@@ -1,4 +1,5 @@
 from unittest.mock import Mock
+import json
 
 from cleaning.meteo import (extraire_meteo, assembler_meteo_multi_poi)
 
@@ -60,9 +61,6 @@ def test_extraire_meteo_plusieurs_variables():
     assert resultat[1]["temperature_2m"] == 14.9
     assert resultat[1]["precipitation"] == 0.0
 
-
-import json
-
 def test_assembler_meteo_multi_poi(tmp_path):
     (tmp_path / "data" / "raw").mkdir(parents=True)
 
@@ -83,7 +81,6 @@ def test_assembler_meteo_multi_poi(tmp_path):
     assert len(resultat) == 1
     assert resultat[0]["poi_id"] == 123
     assert resultat[0]["temperature_2m"] == 15.5
-
 
 def test_assembler_meteo_multi_poi_deux_poi(tmp_path):
     (tmp_path / "data" / "raw").mkdir(parents=True)

@@ -2,6 +2,7 @@ from collections import Counter
 import polars as pl
 import pytest
 import duckdb
+from datetime import date, datetime
 
 from simulation.sessions import (
     facteur_efficacite,
@@ -35,8 +36,6 @@ def test_facteur_efficacite_limite_20():
 
 def test_facteur_efficacite_limite_0():
     assert facteur_efficacite(0.0) == 0.9  # >= 0, donc tempéré
-
-from datetime import date, datetime
 
 def test_combiner_date_heure():
     resultat = combiner_date_heure(date(2026, 7, 22), 18, 33)
@@ -83,7 +82,6 @@ def test_generer_date_session_dans_la_plage():
     for _ in range(100):
         date_session = generer_date_session(date_debut, date_fin)
         assert date_debut <= date_session <= date_fin
-
 
 def test_generer_session_structure(con):
     creer_table_poi(con)

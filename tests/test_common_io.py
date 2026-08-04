@@ -10,7 +10,6 @@ from common.io import generer_nom_fichier, sauvegarder_local, uploader_s3
 
 
 # --- generer_nom_fichier ---
-
 def test_generer_nom_fichier_contient_lidentifiant():
     resultat = generer_nom_fichier("paris")
     assert "paris" in resultat
@@ -29,9 +28,7 @@ def test_generer_nom_fichier_suffixe_et_extension_personnalises():
     resultat = generer_nom_fichier("paris", suffixe="meteo", extension="csv")
     assert "_meteo.csv" in resultat
 
-
 # --- sauvegarder_local ---
-
 def test_sauvegarder_local_ecrit_le_bon_contenu(tmp_path):
     donnees = {"cle": "valeur"}
     chemin = tmp_path / "test.json"
@@ -50,9 +47,7 @@ def test_sauvegarder_local_echoue_si_dossier_parent_absent(tmp_path):
     with pytest.raises(FileNotFoundError):
         sauvegarder_local(donnees, chemin)
 
-
 # --- uploader_s3 ---
-
 def test_uploader_s3_appelle_upload_file(tmp_path):
     fichier_test = tmp_path / "test.json"
     fichier_test.write_text('{"cle": "valeur"}')

@@ -16,7 +16,6 @@ POIDS_PAR_HEURE = {
     21: 4, 22: 2, 23: 1,
 }
 
-
 def generer_heure_debut() -> tuple[int, int]:
     """Génère une heure et une minute de début de session, pondérées vers la soirée."""
     heures = list(POIDS_PAR_HEURE.keys())
@@ -25,18 +24,15 @@ def generer_heure_debut() -> tuple[int, int]:
     minute = random.randint(0, 59)
     return heure, minute
 
-
 def generer_date_session(date_debut: date, date_fin: date) -> date:
     """Génère une date aléatoire entre date_debut et date_fin inclus."""
     nb_jours = (date_fin - date_debut).days
     decalage = random.randint(0, nb_jours)
     return date_debut + timedelta(days=decalage)
 
-
 def combiner_date_heure(date_session: date, heure: int, minute: int) -> datetime:
     """Combine une date et une heure/minute en un objet datetime complet."""
     return datetime(date_session.year, date_session.month, date_session.day, heure, minute)
-
 
 def recuperer_temperature(con, poi_id: int, horodatage_tronque: str) -> float | None:
     """Récupère la température pour un poi_id et un horodatage donnés, ou None si absente."""
@@ -48,11 +44,9 @@ def recuperer_temperature(con, poi_id: int, horodatage_tronque: str) -> float | 
         return None
     return resultat.item()
 
-
 def generer_energie_cible(min_kwh: float = 5.0, max_kwh: float = 30.0) -> float:
     """Génère une énergie cible aléatoire, distribution uniforme."""
     return random.uniform(min_kwh, max_kwh)
-
 
 def facteur_efficacite(temperature_c: float) -> float:
     """Renvoie un facteur d'efficacité de charge entre 0 et 1, réduit par le froid."""
@@ -63,7 +57,6 @@ def facteur_efficacite(temperature_c: float) -> float:
     else:
         return 0.75
 
-
 def calculer_duree(energie_kwh: float, power_kw: float, temperature: float | None) -> float:
     """Calcule la durée de charge en heures, ajustée par la température."""
     if temperature is None:
@@ -72,7 +65,6 @@ def calculer_duree(energie_kwh: float, power_kw: float, temperature: float | Non
 
     efficacite = facteur_efficacite(temperature)
     return energie_kwh / (power_kw * efficacite)
-
 
 def generer_session(
     con,
