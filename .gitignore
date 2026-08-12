@@ -28,3 +28,7 @@ data/warehouse/*.duckdb.wal
 
 # Artefacts Windows/WSL
 *:Zone.Identifier
+
+# Package de déploiement Lambda (reconstruit à chaque déploiement, jamais versionné)
+lambda-package/
+lambda-*.zip

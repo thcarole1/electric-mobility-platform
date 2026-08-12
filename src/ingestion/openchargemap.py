@@ -12,7 +12,6 @@ from common.io import generer_nom_fichier, sauvegarder_local, uploader_s3
 import requests
 import boto3
 from botocore.exceptions import ClientError, NoCredentialsError
-from dotenv import load_dotenv
 import logging
 logger = logging.getLogger(__name__)
 
@@ -68,7 +67,7 @@ def ingerer_openchargemap(
     bucket_s3: str,
     client_s3,
     root_path: Path,
-) -> None:
+) -> str | None:
     """Orchestre l'ingestion complète : appel API, sauvegarde locale, upload S3."""
 
     # Appeler generer_nom_fichier(ville)
@@ -81,7 +80,7 @@ def ingerer_openchargemap(
     donnees = appeler_api_openchargemap(latitude, longitude, distance, cle_api)
     if donnees is None:
         logger.error("Ingestion interrompue : échec de l'appel API.")
-        return
+        return None
 
     # Appeler sauvegarder_local(...)
     sauvegarder_local(donnees, chemin_local)
@@ -91,3 +90,5 @@ def ingerer_openchargemap(
 
     # Appeler uploader_s3(...)
     uploader_s3(chemin_local, bucket_s3, cle_s3, client_s3)
+
+    return nom_fichier

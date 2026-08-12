@@ -81,14 +81,15 @@ def test_ingerer_openchargemap_enchaine_toutes_les_etapes(monkeypatch, tmp_path)
         lambda chemin, bucket, cle, client: appels_upload.append((chemin, bucket, cle))
     )
 
-    ingerer_openchargemap(
-        latitude=48.85, longitude=2.35, distance=5, ville="paris",
-        cle_api="fausse_cle", bucket_s3="mon-bucket", client_s3=Mock(),
-        root_path=tmp_path,
-    )
+    resultat = ingerer_openchargemap(
+                                        latitude=48.85, longitude=2.35, distance=5, ville="paris",
+                                        cle_api="fausse_cle", bucket_s3="mon-bucket", client_s3=Mock(),
+                                        root_path=tmp_path,
+                                    )
 
     assert len(appels_sauvegarde) == 1
     assert len(appels_upload) == 1
+    assert resultat is not None
 
 def test_ingerer_openchargemap_echec_API(monkeypatch, tmp_path):
     appels_sauvegarde = []
@@ -107,11 +108,12 @@ def test_ingerer_openchargemap_echec_API(monkeypatch, tmp_path):
         lambda chemin, bucket, cle, client: appels_upload.append((chemin, bucket, cle))
     )
 
-    ingerer_openchargemap(
-        latitude=48.85, longitude=2.35, distance=5, ville="paris",
-        cle_api="fausse_cle", bucket_s3="mon-bucket", client_s3=Mock(),
-        root_path=tmp_path,
-    )
+    resultat = ingerer_openchargemap(
+                                        latitude=48.85, longitude=2.35, distance=5, ville="paris",
+                                        cle_api="fausse_cle", bucket_s3="mon-bucket", client_s3=Mock(),
+                                        root_path=tmp_path,
+                                    )
 
     assert len(appels_sauvegarde) == 0
     assert len(appels_upload) == 0
+    assert resultat is None
