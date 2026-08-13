@@ -7,6 +7,8 @@ import polars as pl
 
 logger = logging.getLogger(__name__)
 
+VILLES_CONNUES = ["Paris"]
+
 def sauvegarder_parquet(dataframe: pl.DataFrame, chemin: Path) -> None:
     """Sauvegarde un DataFrame Polars au format Parquet."""
     dataframe.write_parquet(chemin)
@@ -52,14 +54,18 @@ def extraire_connections(donnees_json: list[dict]) -> list[dict]:
     logger.info(f"Table connections extraite : {len(table_connections)} connections.")
     return table_connections
 
-
 def ajouter_town_normalisee(dataframe: pl.DataFrame) -> pl.DataFrame:
-    """Ajoute une colonne town_normalisee, extraite de title quand town est absente."""
+    """Ajoute une colonne town_normalisee, extraite de title quand town est absente.
+    Seules les valeurs figurant dans VILLES_CONNUES sont acceptées comme ville valide."""
     dataframe = dataframe.with_columns(
-        pl.when((pl.col("town").is_null()) & (pl.col("title").str.contains(" | ", literal=True)))
-          .then(pl.col("title").str.split(" | ", literal=True).list.first())
-          .otherwise(pl.col("town"))
-          .alias("town_normalisee")
+        pl.when(
+            (pl.col("town").is_null())
+            & (pl.col("title").str.contains(" | ", literal=True))
+            & (pl.col("title").str.split(" | ", literal=True).list.first().is_in(VILLES_CONNUES))
+        )
+        .then(pl.col("title").str.split(" | ", literal=True).list.first())
+        .otherwise(pl.col("town"))
+        .alias("town_normalisee")
     )
     nb_manquants = dataframe.select(pl.col("town_normalisee").is_null().sum()).item()
     logger.info(f"Colonne town_normalisee ajoutée : {nb_manquants} valeurs encore manquantes.")

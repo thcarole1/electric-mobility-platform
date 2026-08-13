@@ -80,6 +80,18 @@ def test_ajouter_town_normalisee_town_present():
         assert resultat.shape[1] == len(donnees_poi) +1
         assert resultat["town_normalisee"][0] == "Paris"
 
+def test_ajouter_town_normalisee_ville_inconnue_rejetee():
+    donnees_poi = {
+        "town": None,
+        "title": "SAEMES | PARKING LAGRANGE"
+    }
+
+    poi_df = pl.DataFrame(donnees_poi)
+
+    resultat = ajouter_town_normalisee(poi_df)
+
+    assert resultat["town_normalisee"][0] is None
+
 def test_ajouter_town_normalisee_town_absent():
         donnees_poi = {
                         "town" : None,
