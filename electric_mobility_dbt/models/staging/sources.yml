@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: electric_mobility
+    schema: main
+    tables:
+      - name: poi
+      - name: connections
+      - name: meteo
+      - name: sessions

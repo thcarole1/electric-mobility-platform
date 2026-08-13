@@ -1,0 +1,12 @@
+version: 2
+
+models:
+  - name: stg_connecteurs_par_type
+    columns:
+      - name: connection_type
+        tests:
+          - not_null
+          - unique
+      - name: nb_connecteurs
+        tests:
+          - not_null
