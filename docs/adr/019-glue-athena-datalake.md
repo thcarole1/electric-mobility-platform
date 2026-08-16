@@ -59,8 +59,10 @@ Le pipeline dispose désormais de deux moyens équivalents d'interroger
 les données nettoyées : DuckDB en local (rapide, mono-utilisateur) et
 Athena sur S3 (serverless, accessible à quiconque a les permissions
 IAM adéquates) — les deux coexistent sans que l'un ne remplace l'autre.
-La table `meteo` n'a pas encore été migrée vers `processed/` (le
-DataFrame correspondant n'était pas disponible en session) ; `sessions`
+La table `meteo` a été migrée vers `processed/meteo/` lors d'une
+session ultérieure (16/08/2026), complétant les trois tables réelles
+du data lake (poi, connections, meteo). Une jointure triple entre les
+trois tables a été validée via Athena. `sessions`
 reste volontairement absente de S3, cohérent avec la décision de ne
 pas exposer de données simulées sur cette architecture pour l'instant.
 Si le Crawler doit être exécuté fréquemment, une planification via
