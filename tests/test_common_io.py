@@ -6,7 +6,10 @@ from unittest.mock import Mock
 import pytest
 from botocore.exceptions import ClientError
 
-from common.io import generer_nom_fichier, sauvegarder_local, uploader_s3
+from common.io import (generer_nom_fichier,
+                       sauvegarder_local,
+                       uploader_s3,
+                       sauvegarder_parquet_s3)
 
 
 # --- generer_nom_fichier ---
@@ -71,3 +74,18 @@ def test_uploader_s3_gere_client_error(tmp_path, caplog):
     uploader_s3(fichier_test, "mon-bucket", "raw/test.json", client_mock)
 
     assert "Erreur AWS lors de l'upload" in caplog.text
+
+def test_sauvegarder_parquet_s3_appelle_write_parquet():
+    df_mock = Mock()
+    storage_options = {
+        "aws_access_key_id": "fake_key",
+        "aws_secret_access_key": "fake_secret",
+        "aws_region": "eu-west-3",
+    }
+
+    sauvegarder_parquet_s3(df_mock, "s3://mon-bucket/processed/poi/poi.parquet", storage_options)
+
+    df_mock.write_parquet.assert_called_once_with(
+        "s3://mon-bucket/processed/poi/poi.parquet",
+        storage_options=storage_options
+    )

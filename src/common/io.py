@@ -5,6 +5,7 @@ import json
 import logging
 from datetime import datetime
 from pathlib import Path
+import polars as pl
 
 from botocore.exceptions import ClientError, NoCredentialsError
 
@@ -33,3 +34,8 @@ def uploader_s3(chemin_local: Path, bucket: str, cle_s3: str, client_s3) -> None
         logger.error("Erreur : identifiants AWS manquants ou invalides.")
     except ClientError as e:
         logger.error(f"Erreur AWS lors de l'upload : {e}")
+
+def sauvegarder_parquet_s3(df: pl.DataFrame, chemin_s3: str, storage_options: dict) -> None:
+    """Sauvegarde un DataFrame Polars en Parquet directement sur S3."""
+    df.write_parquet(chemin_s3, storage_options=storage_options)
+    logger.info(f"Données sauvegardées en Parquet sur S3 : {chemin_s3}")
