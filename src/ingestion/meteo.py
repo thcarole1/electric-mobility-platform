@@ -5,7 +5,7 @@ import time
 
 import requests
 
-from common.io import generer_nom_fichier, sauvegarder_local, uploader_s3
+from emp_common.storage import generer_nom_fichier, sauvegarder_local, uploader_s3
 
 logger = logging.getLogger(__name__)
 

@@ -36,3 +36,7 @@ lambda-*.zip
 # dbt
 electric_mobility_dbt/dev.duckdb
 logs/
+
+# MWAA build artifacts
+mwaa-plugins/
+plugins.zip

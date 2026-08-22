@@ -6,7 +6,7 @@ from unittest.mock import Mock
 import pytest
 from botocore.exceptions import ClientError
 
-from common.io import (generer_nom_fichier,
+from emp_common.storage import (generer_nom_fichier,
                        sauvegarder_local,
                        uploader_s3,
                        sauvegarder_parquet_s3)
