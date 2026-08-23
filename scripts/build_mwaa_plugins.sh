@@ -2,6 +2,7 @@
 set -e
 
 rm -rf mwaa-plugins
+rm -f plugins.zip
 mkdir -p mwaa-plugins
 
 cp -r src/emp_common mwaa-plugins/

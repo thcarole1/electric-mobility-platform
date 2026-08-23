@@ -1,5 +1,13 @@
 --constraint "https://raw.githubusercontent.com/apache/airflow/constraints-2.10.3/constraints-3.12.txt"
+--no-deps
 polars>=1.0.0
 duckdb>=1.0.0
-boto3>=1.34.0
-requests>=2.31.0
+boto3
+botocore
+jmespath
+s3transfer
+requests
+charset-normalizer
+idna
+urllib3
+certifi
