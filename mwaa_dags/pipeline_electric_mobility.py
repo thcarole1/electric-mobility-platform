@@ -31,9 +31,13 @@ DATE_FIN_METEO = "2026-07-24"
 
 
 def _storage_options() -> dict:
+    session = boto3.Session()
+    credentials = session.get_credentials()
+    frozen = credentials.get_frozen_credentials()
     return {
-        "aws_access_key_id": os.environ.get("AWS_ACCESS_KEY_ID"),
-        "aws_secret_access_key": os.environ.get("AWS_SECRET_ACCESS_KEY"),
+        "aws_access_key_id": frozen.access_key,
+        "aws_secret_access_key": frozen.secret_key,
+        "aws_session_token": frozen.token,
         "aws_region": "eu-west-3",
     }
 

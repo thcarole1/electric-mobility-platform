@@ -40,3 +40,6 @@ logs/
 # MWAA build artifacts
 mwaa-plugins/
 plugins.zip
+
+# MWAA wheels build artifacts
+mwaa_wheels/
