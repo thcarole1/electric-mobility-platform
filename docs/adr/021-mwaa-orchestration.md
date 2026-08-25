@@ -153,3 +153,29 @@ Ce chantier a représenté, de loin, l'investissement en temps le plus
 important du projet — mais aussi la démonstration la plus complète
 d'une compétence de diagnostic réseau/cloud complexe, potentiellement
 la plus valorisable en entretien technique.
+
+## Annexe — Points clés à retenir pour tout futur projet MWAA
+
+Le détail complet, incluant commandes exactes et checklist de
+démarrage, est capitalisé dans un guide autonome et réutilisable :
+`Guide_MWAA_Bonnes_Pratiques.md` (vault Obsidian,
+`02_REFERENCES_TECHNIQUES/`). Résumé des points les plus critiques :
+
+- **Un VPC privé sans NAT Gateway ne peut jamais atteindre Internet
+  public** (ni PyPI, ni GitHub, ni aucune API tierce) — décision
+  d'architecture à trancher avant toute création, pas un correctif à
+  ajouter après coup.
+- **Deux endpoints VPC internes sont générés dynamiquement** à chaque
+  création d'environnement (`DatabaseVpcEndpointService`,
+  `WebserverVpcEndpointService`), récupérables uniquement via
+  `aws mwaa get-environment` — leur absence bloque en `PENDING`
+  indéfiniment.
+- **Chaque composant MWAA (Webserver, Scheduler/Worker, DAG Processor)
+  a un environnement Python totalement isolé** — aucune propagation de
+  `requirements.txt` entre eux, à vérifier composant par composant via
+  les logs CloudWatch.
+- **Le startup script s'exécute avant que le réseau ne soit stable** —
+  jamais d'appel réseau direct sans un `sleep` préalable.
+- **Toujours tester en local avec `aws-mwaa-local-runner` avant tout
+  déploiement cloud** — un cycle de test local prend quelques minutes,
+  un cycle cloud en prend 20 à 90.
