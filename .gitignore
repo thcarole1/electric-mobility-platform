@@ -43,3 +43,10 @@ plugins.zip
 
 # MWAA wheels build artifacts
 mwaa_wheels/
+
+# Terraform
+terraform/.terraform/
+*.tfstate
+*.tfstate.backup
+terraform/*.tfvars
+terraform/placeholder.zip
