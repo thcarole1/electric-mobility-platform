@@ -147,6 +147,10 @@ découverte finale.
 Le résultat : un DAG qui s'exécute avec succès de bout en bout sur un
 environnement MWAA réel, produisant des données à jour sur S3.
 
+![DAG Airflow exécuté avec succès sur MWAA](docs/images/mwaa-dag-success.png)
+
+![Données Parquet produites sur S3 après exécution](docs/images/s3-processed-poi.png)
+
 **Pour aller plus loin :**
 - [ADR-021](docs/adr/021-mwaa-orchestration.md) — chronologie complète
   des dix causes racines identifiées et corrigées
