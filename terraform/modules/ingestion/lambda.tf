@@ -1,6 +1,6 @@
 resource "aws_lambda_function" "openchargemap_ingestion" {
   function_name = "electric-mobility-ingestion-openchargemap"
-  role           = "arn:aws:iam::312957452752:role/electric-mobility-lambda-role"
+  role           = var.lambda_role_arn
   handler        = "lambda_function.lambda_handler"
   runtime        = "python3.12"
   filename       = "placeholder.zip"
@@ -20,7 +20,7 @@ resource "aws_lambda_function" "openchargemap_ingestion" {
 
 resource "aws_lambda_function" "meteo_ingestion" {
   function_name = "electric-mobility-ingestion-meteo"
-  role           = "arn:aws:iam::312957452752:role/electric-mobility-lambda-role"
+  role           = var.lambda_role_arn
   handler        = "lambda_function.lambda_handler"
   runtime        = "python3.12"
   filename       = "placeholder.zip"

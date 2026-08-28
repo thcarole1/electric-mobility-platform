@@ -50,3 +50,4 @@ terraform/.terraform/
 *.tfstate.backup
 terraform/*.tfvars
 terraform/placeholder.zip
+terraform/*.tfstate.*.backup

@@ -77,3 +77,15 @@ resource "aws_iam_policy" "s3_readonly_processed_policy" {
     ]
   })
 }
+
+output "lambda_role_arn" {
+  value = aws_iam_role.lambda_execution_role.arn
+}
+
+output "lambda_role_name" {
+  value = aws_iam_role.lambda_execution_role.name
+}
+
+output "glue_crawler_role_name" {
+  value = aws_iam_role.glue_crawler_role.name
+}
