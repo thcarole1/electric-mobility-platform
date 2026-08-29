@@ -24,7 +24,10 @@ l'industrie automobile.
 - **Orchestration Airflow** via **Amazon MWAA**, déployée et validée
   sur un vrai environnement cloud — voir [le chantier le plus
   formateur du projet](#le-chantier-le-plus-formateur--mwaa)
-- **63 tests unitaires**, **21 Architecture Decision Records**
+- **Infrastructure as Code** avec **Terraform** (28 ressources, backend
+  distant S3), pipeline **containerisé avec Docker**, et **CI/CD**
+  via GitHub Actions (tests automatiques, `terraform plan` sur PR)
+- **63 tests unitaires**, **24 Architecture Decision Records**
   documentant chaque choix technique
 - Base locale **DuckDB** pour l'exploration rapide, sans dépendance
   cloud pour itérer
@@ -79,6 +82,9 @@ Deux chemins d'orchestration coexistent volontairement :
 | Orchestration cloud | Amazon MWAA (Apache Airflow 2.10.3) |
 | Tests | pytest (63 tests), tests dbt |
 | Infra réseau | VPC, sous-réseaux privés, VPC Endpoints, NAT Gateway |
+| Infrastructure as Code | Terraform (backend S3 distant, 4 modules) |
+| Containerisation | Docker (multi-stage build) |
+| CI/CD | GitHub Actions (tests, terraform plan, protection de branche) |
 
 ## Structure du dépôt
 
@@ -93,6 +99,9 @@ electric-mobility-platform/
 ├── lambda_functions/     # handlers Lambda (ingestion quotidienne)
 ├── mwaa_dags/            # DAG Airflow + dépendances (MWAA)
 ├── electric_mobility_dbt/ # modèles et tests dbt
+├── terraform/             # infrastructure as code (4 modules)
+├── .github/workflows/      # CI/CD (tests, terraform plan)
+├── Dockerfile              # containerisation du pipeline (multi-stage)
 ├── notebooks/            # exploration, exemples d'usage des modules
 ├── scripts/              # scripts de build (packages Lambda, plugins MWAA)
 ├── tests/                # 63 tests unitaires (pytest)
@@ -166,8 +175,8 @@ environnement MWAA réel, produisant des données à jour sur S3.
 ## Historique des décisions (ADR)
 
 Chaque choix technique significatif est documenté dans
-[`docs/adr/`](docs/adr/) — 21 décisions à ce jour, de la normalisation
-d'une colonne à l'orchestration cloud complète. Quelques points
+[`docs/adr/`](docs/adr/) — 24 décisions à ce jour, de la normalisation
+d'une colonne à l'industrialisation complète. Quelques points
 d'entrée notables :
 
 - [ADR-007](docs/adr/007-extraction-module-commun-io.md) — factoriser
@@ -180,14 +189,24 @@ d'entrée notables :
   d'orchestration locale, palliant l'absence d'un DAG à l'époque
 - [ADR-021](docs/adr/021-mwaa-orchestration.md) — le chantier MWAA en
   détail
+- [ADR-022](docs/adr/022-terraform-infrastructure-as-code.md) —
+  import de l'infrastructure existante sous Terraform
+- [ADR-023](docs/adr/023-docker-containerisation.md) — containerisation
+  du pipeline avec Docker
+- [ADR-024](docs/adr/024-ci-cd-github-actions.md) — CI/CD et backend
+  Terraform distant
 
 ## Roadmap
 
 - ✅ **Phase 0-3** — Cadrage, MVP local + AWS, enrichissement des
   sources, extension AWS complète (Lambda, dbt, data lake, MWAA)
+- ✅ **Phase 5** — Industrialisation : infrastructure complète sous
+  Terraform (28 ressources, backend distant S3), pipeline containerisé
+  avec Docker (multi-stage build), CI/CD avec GitHub Actions (tests
+  automatiques, protection de branche, `terraform plan` sur chaque
+  Pull Request touchant l'infrastructure)
 - ⬜ **Phase 4** — Data Science (détection d'anomalies, prévision sur
   les sessions de recharge simulées)
-- ⬜ **Phase 5** — Industrialisation (Terraform, Docker, CI/CD)
 
 ---
 
