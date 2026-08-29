@@ -140,3 +140,4 @@ resource "aws_route_table" "mwaa_private" {
   }
   vpc_id = aws_vpc.default.id
 }
+# Fichier réseau du socle MWAA
