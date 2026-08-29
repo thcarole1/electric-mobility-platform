@@ -1,5 +1,10 @@
 # Electric Mobility Platform
 
+[![Tests](https://github.com/thcarole1/electric-mobility-platform/actions/workflows/tests.yml/badge.svg)](https://github.com/thcarole1/electric-mobility-platform/actions/workflows/tests.yml)
+
+
+
+
 Pipeline de données de bout en bout — de l'ingestion API à
 l'orchestration cloud — construit autour de la mobilité électrique et
 de l'énergie.
