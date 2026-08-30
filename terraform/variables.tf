@@ -3,3 +3,8 @@ variable "ocm_api_key" {
   type        = string
   sensitive   = true
 }
+
+variable "alert_email" {
+  description = "Adresse email pour recevoir les alertes de monitoring"
+  type        = string
+}
