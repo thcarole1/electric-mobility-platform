@@ -26,7 +26,7 @@ def lambda_handler(event, context):
         start_date=aujourd_hui,
         end_date=aujourd_hui,
         hourly="temperature_2m",
-        identifiant="poi7008",
+        identifiant="7008",
         bucket_s3="electric-mobility-platform-thierry",
         client_s3=client_s3,
         root_path=root_path,

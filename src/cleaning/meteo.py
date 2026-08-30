@@ -38,7 +38,7 @@ def assembler_meteo_multi_poi(
         lignes_extraites = extraire_meteo(donnees_json)
 
         for ligne in lignes_extraites:
-            ligne["poi_id"] = poi_id
+            ligne["poi_id"] = int(poi_id)
 
         meteo_globale.extend(lignes_extraites)
 
