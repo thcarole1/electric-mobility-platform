@@ -118,3 +118,25 @@ def test_assembler_meteo_multi_poi_deux_poi(tmp_path):
     assert resultat[0]["temperature_2m"] == 15.5
     assert resultat[1]["poi_id"] == 456
     assert resultat[1]["temperature_2m"] == 10.5
+
+
+
+def test_assembler_meteo_multi_poi_cle_texte_convertie_en_entier(tmp_path):
+    """Reproduit le cas XCom Airflow : les clés d'un dict transitant par
+    XCom (sérialisation JSON) deviennent des chaînes de caractères.
+    poi_id doit rester un entier dans le résultat, quel que soit le
+    type de la clé en entrée."""
+    (tmp_path / "data" / "raw").mkdir(parents=True)
+    donnees_poi = {
+        "hourly": {
+            "time": ["2026-07-20T00:00"],
+            "temperature_2m": [15.5],
+        }
+    }
+    chemin_fichier = tmp_path / "data" / "raw" / "fichier_poi.json"
+    with open(chemin_fichier, "w") as f:
+        json.dump(donnees_poi, f)
+    correspondance_avec_cle_texte = {"123": "fichier_poi.json"}
+    resultat = assembler_meteo_multi_poi(correspondance_avec_cle_texte, tmp_path)
+    assert resultat[0]["poi_id"] == 123
+    assert isinstance(resultat[0]["poi_id"], int)
