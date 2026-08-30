@@ -31,3 +31,11 @@ resource "aws_lambda_function" "meteo_ingestion" {
     ignore_changes = [filename, source_code_hash]
   }
 }
+
+output "openchargemap_lambda_name" {
+  value = aws_lambda_function.openchargemap_ingestion.function_name
+}
+
+output "meteo_lambda_name" {
+  value = aws_lambda_function.meteo_ingestion.function_name
+}
