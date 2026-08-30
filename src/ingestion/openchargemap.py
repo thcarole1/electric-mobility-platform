@@ -38,7 +38,7 @@ def appeler_api_openchargemap(latitude: float, longitude: float, distance: int, 
     headers = {"Accept": "application/json", "User-Agent": USER_AGENT}
 
     for tentative in range(1, MAX_TENTATIVES + 1):
-        response = requests.get(BASE_URL, headers=headers, params=querystring)
+        response = requests.get(BASE_URL, headers=headers, params=querystring, timeout=30)
 
         if response.status_code == 200:
             logger.info("Requête openchargemap effectuée avec succès.")

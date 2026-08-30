@@ -34,7 +34,7 @@ def appeler_api_meteo(
     headers = {"Accept": "application/json", "User-Agent": USER_AGENT}
 
     for tentative in range(1, MAX_TENTATIVES + 1):
-        response = requests.get(BASE_URL, headers=headers, params=params)
+        response = requests.get(BASE_URL, headers=headers, params=params, timeout=30)
 
         if response.status_code == 200:
             logger.info("Requête Open-Meteo effectuée avec succès.")
