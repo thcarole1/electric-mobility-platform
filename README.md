@@ -39,6 +39,7 @@ l'industrie automobile.
 - [Structure du dépôt](#structure-du-dépôt)
 - [Lancer le projet](#lancer-le-projet)
 - [Le chantier le plus formateur : MWAA](#le-chantier-le-plus-formateur--mwaa)
+- [Restitution métier : dashboard Power BI](#restitution-métier--dashboard-power-bi)
 - [Historique des décisions (ADR)](#historique-des-décisions-adr)
 - [Roadmap](#roadmap)
 
@@ -172,10 +173,35 @@ environnement MWAA réel, produisant des données à jour sur S3.
   des composants, checklist de démarrage) — capitalisé pour tout futur
   projet, disponible sur demande
 
+## Restitution métier : dashboard Power BI
+
+Un dashboard Power BI, connecté directement à Athena via ODBC,
+donne une destination visible aux données produites par le pipeline
+— fermant la boucle entre ingestion, transformation, et exploitation
+métier.
+
+**Page 1 — Vue d'ensemble** : carte géographique des bornes de
+recharge, répartition des types de connecteurs, indicateurs clés
+(nombre de bornes, nombre de connecteurs, puissance moyenne), avec un
+filtre interactif par type de connecteur.
+
+![Vue d'ensemble du dashboard Power BI](docs/images/powerbi-vue-ensemble.png)
+
+**Page 2 — Disponibilité et puissance** : taux de disponibilité
+opérationnelle des connecteurs, puissance moyenne par type, table
+détaillée triable par borne.
+
+![Page disponibilité et puissance du dashboard Power BI](docs/images/powerbi-disponibilite-puissance.png)
+
+La mise en place de cette connexion a révélé une incohérence de type
+sur la colonne `poi_id` dans les données météo, cassant les requêtes
+Athena — voir [ADR-026](docs/adr/026-dashboard-powerbi-athena.md) pour
+le détail du diagnostic et de la correction.
+
 ## Historique des décisions (ADR)
 
 Chaque choix technique significatif est documenté dans
-[`docs/adr/`](docs/adr/) — 24 décisions à ce jour, de la normalisation
+[`docs/adr/`](docs/adr/) — 26 décisions à ce jour, de la normalisation
 d'une colonne à l'industrialisation complète. Quelques points
 d'entrée notables :
 
@@ -195,6 +221,10 @@ d'entrée notables :
   du pipeline avec Docker
 - [ADR-024](docs/adr/024-ci-cd-github-actions.md) — CI/CD et backend
   Terraform distant
+- [ADR-025](docs/adr/025-monitoring-cloudwatch-sns.md) — observabilité
+  du pipeline (CloudWatch Alarms, SNS)
+- [ADR-026](docs/adr/026-dashboard-powerbi-athena.md) — dashboard
+  Power BI et correction d'une incohérence de type de données
 
 ## Roadmap
 
