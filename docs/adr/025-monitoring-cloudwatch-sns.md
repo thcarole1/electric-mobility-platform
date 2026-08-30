@@ -58,3 +58,27 @@ exécution pour ce pipeline. Aucune surveillance n'a par ailleurs été
 mise en place sur l'environnement MWAA ni sur le Glue Crawler, ces
 composants n'étant pas exécutés en continu dans le cadre actuel du
 projet.
+
+## Incident : verrou de state orphelin lié à une variable sans valeur transmise en CI
+
+L'intégration de ce module a révélé un incident lié au workflow
+`terraform-plan.yml` existant (ADR-024) : la variable `alert_email`,
+sans valeur par défaut et fournie uniquement via `terraform.tfvars`
+(fichier local, jamais versionné), n'était pas transmise au workflow
+CI. Terraform, ne recevant aucune valeur pour cette variable
+obligatoire, a tenté une saisie interactive impossible dans un
+environnement d'exécution automatisé, bloquant l'exécution sans
+message d'erreur explicite pendant plus de dix minutes.
+
+Ce blocage a eu une conséquence secondaire : le verrou natif S3 du
+State (`terraform.tfstate.tflock`), acquis en début d'exécution, n'a
+jamais été relâché par le processus resté bloqué, empêchant toute
+nouvelle exécution — locale ou via CI — jusqu'à sa suppression
+manuelle après vérification qu'aucune opération légitime n'était en
+cours. Corrigé en transmettant la variable au workflow via un nouveau
+secret GitHub (`ALERT_EMAIL`), suivant le même mécanisme déjà en place
+pour `ocm_api_key`. Cet incident souligne la nécessité de vérifier
+systématiquement, lors de l'ajout d'une nouvelle variable Terraform,
+que sa valeur est bien accessible depuis chaque environnement
+d'exécution (local et CI), pas uniquement celui utilisé au moment de
+son introduction.
