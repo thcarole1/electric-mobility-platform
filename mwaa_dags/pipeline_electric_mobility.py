@@ -24,6 +24,7 @@ from ingestion.meteo import ingerer_meteo
 from cleaning.openchargemap import nettoyer_openchargemap
 from cleaning.meteo import assembler_meteo_multi_poi
 from emp_common.storage import sauvegarder_parquet_s3
+from validation.schema import valider_schema
 
 BUCKET_S3 = "electric-mobility-platform-thierry"
 DATE_DEBUT_METEO = "2026-07-20"
@@ -130,6 +131,11 @@ def tache_assemblage_meteo(**context):
 
     meteo_globale = assembler_meteo_multi_poi(correspondance_poi_fichier, root_path)
     meteo_df = pl.DataFrame(meteo_globale)
+    valider_schema(
+        meteo_df,
+        {"poi_id": pl.Int64, "time": pl.String, "temperature_2m": pl.Float64},
+        "meteo",
+    )
 
     storage_options = _storage_options()
     chemin_meteo_s3 = f"s3://{BUCKET_S3}/processed/meteo/meteo.parquet"
