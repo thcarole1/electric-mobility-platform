@@ -27,7 +27,7 @@ l'industrie automobile.
 - **Infrastructure as Code** avec **Terraform** (28 ressources, backend
   distant S3), pipeline **containerisé avec Docker**, et **CI/CD**
   via GitHub Actions (tests automatiques, `terraform plan` sur PR)
-- **63 tests unitaires**, **24 Architecture Decision Records**
+- **68 tests unitaires**, **27 Architecture Decision Records**
   documentant chaque choix technique
 - Base locale **DuckDB** pour l'exploration rapide, sans dépendance
   cloud pour itérer
@@ -81,7 +81,7 @@ Deux chemins d'orchestration coexistent volontairement :
 | Transformation | dbt (dbt-duckdb) |
 | Orchestration serverless | AWS Lambda, EventBridge Scheduler |
 | Orchestration cloud | Amazon MWAA (Apache Airflow 2.10.3) |
-| Tests | pytest (63 tests), tests dbt |
+| Tests | pytest (68 tests), tests dbt |
 | Infra réseau | VPC, sous-réseaux privés, VPC Endpoints, NAT Gateway |
 | Infrastructure as Code | Terraform (backend S3 distant, 4 modules) |
 | Containerisation | Docker (multi-stage build) |
@@ -105,7 +105,7 @@ electric-mobility-platform/
 ├── Dockerfile              # containerisation du pipeline (multi-stage)
 ├── notebooks/            # exploration, exemples d'usage des modules
 ├── scripts/              # scripts de build (packages Lambda, plugins MWAA)
-├── tests/                # 63 tests unitaires (pytest)
+├── tests/                # 68 tests unitaires (pytest)
 ├── run_pipeline.py       # orchestration locale complète, une commande
 └── docs/adr/             # 21 Architecture Decision Records
 ```
@@ -201,7 +201,7 @@ le détail du diagnostic et de la correction.
 ## Historique des décisions (ADR)
 
 Chaque choix technique significatif est documenté dans
-[`docs/adr/`](docs/adr/) — 26 décisions à ce jour, de la normalisation
+[`docs/adr/`](docs/adr/) — 27 décisions à ce jour, de la normalisation
 d'une colonne à l'industrialisation complète. Quelques points
 d'entrée notables :
 
@@ -225,16 +225,25 @@ d'entrée notables :
   du pipeline (CloudWatch Alarms, SNS)
 - [ADR-026](docs/adr/026-dashboard-powerbi-athena.md) — dashboard
   Power BI et correction d'une incohérence de type de données
+- [ADR-027](docs/adr/027-validation-schema-donnees.md) — validation
+  de schéma à la source
 
 ## Roadmap
 
 - ✅ **Phase 0-3** — Cadrage, MVP local + AWS, enrichissement des
   sources, extension AWS complète (Lambda, dbt, data lake, MWAA)
 - ✅ **Phase 5** — Industrialisation : infrastructure complète sous
-  Terraform (28 ressources, backend distant S3), pipeline containerisé
+  Terraform (32 ressources, backend distant S3), pipeline containerisé
   avec Docker (multi-stage build), CI/CD avec GitHub Actions (tests
   automatiques, protection de branche, `terraform plan` sur chaque
   Pull Request touchant l'infrastructure)
+- ✅ **Phase 6** — Observabilité : alarmes CloudWatch sur les échecs
+  d'ingestion, notifications SNS par email — validées en conditions
+  réelles suite à une panne du service Open Charge Map
+- ✅ **Phase 7** — Restitution métier : dashboard Power BI à deux pages,
+  connecté directement à Athena
+- ✅ **Phase 8** — Qualité de donnée : validation de schéma à la source,
+  appliquée sur les deux chemins d'exécution du pipeline
 - ⬜ **Phase 4** — Data Science (détection d'anomalies, prévision sur
   les sessions de recharge simulées)
 
