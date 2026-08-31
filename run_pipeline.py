@@ -10,6 +10,7 @@ import argparse
 import boto3
 import duckdb
 import polars as pl
+from validation.schema import valider_schema
 from dotenv import load_dotenv
 
 from ingestion.openchargemap import ingerer_openchargemap
@@ -85,6 +86,11 @@ def main(chemin_db: str):
     # 5. Assemblage et chargement météo
     meteo_globale = assembler_meteo_multi_poi(correspondance_poi_fichier, ROOT_PATH)
     meteo_df = pl.DataFrame(meteo_globale)
+    valider_schema(
+        meteo_df,
+        {"poi_id": pl.Int64, "time": pl.String, "temperature_2m": pl.Float64},
+        "meteo",
+    )
     charger_meteo_dans_duckdb(con, meteo_df)
 
     # 6. Génération et chargement des sessions
