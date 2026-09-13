@@ -1,5 +1,8 @@
 # Electric Mobility Platform
 
+🇫🇷 Français | 🇬🇧 [English](README.en.md)
+
+
 [![Tests](https://github.com/thcarole1/electric-mobility-platform/actions/workflows/tests.yml/badge.svg)](https://github.com/thcarole1/electric-mobility-platform/actions/workflows/tests.yml)
 
 
