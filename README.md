@@ -60,7 +60,7 @@ tomber en panne, mais un pipeline de données.
 - **Orchestration Airflow** via **Amazon MWAA**, déployée et validée
   sur un vrai environnement cloud : voir [le chantier le plus
   formateur du projet](#le-chantier-le-plus-formateur--mwaa)
-- **Infrastructure as Code** avec **Terraform** (28 ressources, backend
+- **Infrastructure as Code** avec **Terraform** (32 ressources, backend
   distant S3), pipeline **containerisé avec Docker**, et **CI/CD**
   via GitHub Actions (tests automatiques, `terraform plan` sur PR)
 - **68 tests unitaires**, **27 Architecture Decision Records**
@@ -143,7 +143,7 @@ electric-mobility-platform/
 ├── scripts/              # scripts de build (packages Lambda, plugins MWAA)
 ├── tests/                # 68 tests unitaires (pytest)
 ├── run_pipeline.py       # orchestration locale complète, une commande
-└── docs/adr/             # 21 Architecture Decision Records
+└── docs/adr/             # 27 Architecture Decision Records
 ```
 
 ## Lancer le projet

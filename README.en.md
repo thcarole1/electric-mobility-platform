@@ -51,7 +51,7 @@ but a data pipeline.
 - **Airflow orchestration** via **Amazon MWAA**, deployed and
   validated on a real cloud environment: see [the most challenging
   part of this project](#the-most-challenging-part-of-this-project-mwaa)
-- **Infrastructure as Code** with **Terraform** (28 resources, remote
+- **Infrastructure as Code** with **Terraform** (32 resources, remote
   S3 backend), pipeline **containerized with Docker**, and **CI/CD**
   via GitHub Actions (automated tests, `terraform plan` on every PR)
 - **68 unit tests**, **27 Architecture Decision Records** documenting
@@ -134,7 +134,7 @@ electric-mobility-platform/
 ├── scripts/              # build scripts (Lambda packages, MWAA plugins)
 ├── tests/                # 68 unit tests (pytest)
 ├── run_pipeline.py       # full local orchestration, one command
-└── docs/adr/             # 21 Architecture Decision Records
+└── docs/adr/             # 27 Architecture Decision Records
 ```
 
 ## Running the project
