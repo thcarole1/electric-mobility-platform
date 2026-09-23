@@ -193,8 +193,8 @@ environment, producing up-to-date data on S3.
 ![Parquet data produced on S3 after execution](docs/images/s3-processed-poi.png)
 
 **To go further:**
-- [ADR-021](docs/adr/021-mwaa-orchestration.md) (in French):
-  complete timeline of the ten root causes identified and fixed
+- [ADR-021](docs/adr/en/021-mwaa-orchestration.md): complete timeline
+  of the ten root causes identified and fixed
 - Standalone MWAA best-practices guide (network pitfalls, component
   isolation, quick-start checklist), capitalized for any future
   project, available on request
@@ -220,37 +220,38 @@ station.
 
 Setting up this connection revealed a type inconsistency in the
 `poi_id` column of the weather data, breaking Athena queries. See
-[ADR-026](docs/adr/026-dashboard-powerbi-athena.md) (in French) for
-the full diagnosis and fix.
+[ADR-026](docs/adr/en/026-dashboard-powerbi-athena.md) for the full
+diagnosis and fix.
 
 ## Decision history (ADR)
 
 Every significant technical decision is documented in
-[`docs/adr/`](docs/adr/), written in French, 27 decisions to date,
-from normalizing a single column to full industrialization. A few
-notable entry points:
+[`docs/adr/`](docs/adr/) (French) and
+[`docs/adr/en/`](docs/adr/en/) (English), 27 decisions to date, from
+normalizing a single column to full industrialization. A few notable
+entry points:
 
-- [ADR-007](docs/adr/007-extraction-module-commun-io.md): factoring
+- [ADR-007](docs/adr/en/007-extraction-module-commun-io.md): factoring
   out a common module shared between two sources
-- [ADR-014](docs/adr/014-lambda-meteo-et-comptes-iam.md): separating
+- [ADR-014](docs/adr/en/014-lambda-meteo-et-comptes-iam.md): separating
   IAM accounts (administration vs. application)
-- [ADR-019](docs/adr/019-glue-athena-datalake.md): setting up the S3
+- [ADR-019](docs/adr/en/019-glue-athena-datalake.md): setting up the S3
   + Athena data lake
-- [ADR-020](docs/adr/020-script-pipeline-local.md): local
+- [ADR-020](docs/adr/en/020-script-pipeline-local.md): local
   orchestration script, filling the gap before a DAG existed
-- [ADR-021](docs/adr/021-mwaa-orchestration.md): the MWAA project in
+- [ADR-021](docs/adr/en/021-mwaa-orchestration.md): the MWAA project in
   detail
-- [ADR-022](docs/adr/022-terraform-infrastructure-as-code.md):
+- [ADR-022](docs/adr/en/022-terraform-infrastructure-as-code.md):
   importing existing infrastructure under Terraform
-- [ADR-023](docs/adr/023-docker-containerisation.md): containerizing
+- [ADR-023](docs/adr/en/023-docker-containerisation.md): containerizing
   the pipeline with Docker
-- [ADR-024](docs/adr/024-ci-cd-github-actions.md): CI/CD and remote
+- [ADR-024](docs/adr/en/024-ci-cd-github-actions.md): CI/CD and remote
   Terraform backend
-- [ADR-025](docs/adr/025-monitoring-cloudwatch-sns.md): pipeline
+- [ADR-025](docs/adr/en/025-monitoring-cloudwatch-sns.md): pipeline
   observability (CloudWatch Alarms, SNS)
-- [ADR-026](docs/adr/026-dashboard-powerbi-athena.md): Power BI
+- [ADR-026](docs/adr/en/026-dashboard-powerbi-athena.md): Power BI
   dashboard and a data type inconsistency fix
-- [ADR-027](docs/adr/027-validation-schema-donnees.md): schema
+- [ADR-027](docs/adr/en/027-validation-schema-donnees.md): schema
   validation at the source
 
 ## Roadmap
