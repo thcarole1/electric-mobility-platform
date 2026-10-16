@@ -22,8 +22,8 @@ resource "aws_subnet" "mwaa_private_2" {
 
 resource "aws_security_group" "mwaa" {
   description = "Security group pour l environnement MWAA"
-  name   = "electric-mobility-mwaa-sg"
-  vpc_id = aws_vpc.default.id
+  name        = "electric-mobility-mwaa-sg"
+  vpc_id      = aws_vpc.default.id
 }
 
 resource "aws_vpc_endpoint" "s3" {
@@ -33,105 +33,6 @@ resource "aws_vpc_endpoint" "s3" {
   vpc_id            = aws_vpc.default.id
   service_name      = "com.amazonaws.eu-west-3.s3"
   vpc_endpoint_type = "Gateway"
-}
-
-resource "aws_vpc_endpoint" "ecr_api" {
-  tags = {
-    Name = "electric-mobility-ecr-api-endpoint"
-  }
-  vpc_id             = aws_vpc.default.id
-  service_name       = "com.amazonaws.eu-west-3.ecr.api"
-  vpc_endpoint_type  = "Interface"
-  subnet_ids         = [aws_subnet.mwaa_private_1.id, aws_subnet.mwaa_private_2.id]
-  security_group_ids = [aws_security_group.mwaa.id]
-}
-
-resource "aws_vpc_endpoint" "ecr_dkr" {
-  tags = {
-    Name = "electric-mobility-ecr-dkr-endpoint"
-  }
-  vpc_id             = aws_vpc.default.id
-  service_name       = "com.amazonaws.eu-west-3.ecr.dkr"
-  vpc_endpoint_type  = "Interface"
-  subnet_ids         = [aws_subnet.mwaa_private_1.id, aws_subnet.mwaa_private_2.id]
-  security_group_ids = [aws_security_group.mwaa.id]
-}
-
-resource "aws_vpc_endpoint" "logs" {
-  tags = {
-    Name = "electric-mobility-logs-endpoint"
-  }
-  vpc_id             = aws_vpc.default.id
-  service_name       = "com.amazonaws.eu-west-3.logs"
-  vpc_endpoint_type  = "Interface"
-  subnet_ids         = [aws_subnet.mwaa_private_1.id, aws_subnet.mwaa_private_2.id]
-  security_group_ids = [aws_security_group.mwaa.id]
-}
-
-resource "aws_vpc_endpoint" "kms" {
-  tags = {
-    Name = "electric-mobility-kms-endpoint"
-  }
-  vpc_id             = aws_vpc.default.id
-  service_name       = "com.amazonaws.eu-west-3.kms"
-  vpc_endpoint_type  = "Interface"
-  subnet_ids         = [aws_subnet.mwaa_private_1.id, aws_subnet.mwaa_private_2.id]
-  security_group_ids = [aws_security_group.mwaa.id]
-}
-
-resource "aws_vpc_endpoint" "sqs" {
-  tags = {
-    Name = "electric-mobility-sqs-endpoint"
-  }
-  vpc_id             = aws_vpc.default.id
-  service_name       = "com.amazonaws.eu-west-3.sqs"
-  vpc_endpoint_type  = "Interface"
-  subnet_ids         = [aws_subnet.mwaa_private_1.id, aws_subnet.mwaa_private_2.id]
-  security_group_ids = [aws_security_group.mwaa.id]
-}
-
-resource "aws_vpc_endpoint" "monitoring" {
-  tags = {
-    Name = "electric-mobility-monitoring-endpoint"
-  }
-  vpc_id             = aws_vpc.default.id
-  service_name       = "com.amazonaws.eu-west-3.monitoring"
-  vpc_endpoint_type  = "Interface"
-  subnet_ids         = [aws_subnet.mwaa_private_1.id, aws_subnet.mwaa_private_2.id]
-  security_group_ids = [aws_security_group.mwaa.id]
-}
-
-resource "aws_vpc_endpoint" "airflow_api" {
-  tags = {
-    Name = "electric-mobility-airflow-api-endpoint"
-  }
-  vpc_id             = aws_vpc.default.id
-  service_name       = "com.amazonaws.eu-west-3.airflow.api"
-  vpc_endpoint_type  = "Interface"
-  subnet_ids         = [aws_subnet.mwaa_private_1.id, aws_subnet.mwaa_private_2.id]
-  security_group_ids = [aws_security_group.mwaa.id]
-}
-
-resource "aws_vpc_endpoint" "airflow_env" {
-  tags = {
-    Name = "electric-mobility-airflow-env-endpoint"
-  }
-  vpc_id             = aws_vpc.default.id
-  service_name       = "com.amazonaws.eu-west-3.airflow.env"
-  vpc_endpoint_type  = "Interface"
-  subnet_ids         = [aws_subnet.mwaa_private_1.id, aws_subnet.mwaa_private_2.id]
-  security_group_ids = [aws_security_group.mwaa.id]
-}
-
-resource "aws_vpc_endpoint" "airflow_ops" {
-  tags = {
-    Name = "electric-mobility-airflow-ops-endpoint"
-  }
-  vpc_id             = aws_vpc.default.id
-  service_name       = "com.amazonaws.eu-west-3.airflow.ops"
-  vpc_endpoint_type  = "Interface"
-  subnet_ids         = [aws_subnet.mwaa_private_1.id, aws_subnet.mwaa_private_2.id]
-  security_group_ids = [aws_security_group.mwaa.id]
 }
 
 resource "aws_route_table" "mwaa_private" {
