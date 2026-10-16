@@ -5,8 +5,8 @@ resource "aws_scheduler_schedule" "openchargemap_daily" {
   schedule_expression_timezone = "Europe/Paris"
 
   flexible_time_window {
-    mode                       = "FLEXIBLE"
-    maximum_window_in_minutes  = 15
+    mode                      = "FLEXIBLE"
+    maximum_window_in_minutes = 15
   }
 
   target {
@@ -27,8 +27,8 @@ resource "aws_scheduler_schedule" "meteo_daily" {
   schedule_expression_timezone = "Europe/Paris"
 
   flexible_time_window {
-    mode                       = "FLEXIBLE"
-    maximum_window_in_minutes  = 15
+    mode                      = "FLEXIBLE"
+    maximum_window_in_minutes = 15
   }
 
   target {
